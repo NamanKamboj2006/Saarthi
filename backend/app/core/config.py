@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     VERSION: str = "0.1.0"
     API_V1_STR: str = "/api/v1"
     ENVIRONMENT: str = "development"
+    PORT: int = 8000
 
     # CORS configuration
     CORS_ORIGINS: List[str] = [
@@ -25,6 +26,7 @@ class Settings(BaseSettings):
     # Gemini / Gemma API configuration
     GEMINI_API_KEY: Optional[str] = None
     GEMINI_MODEL: str = "gemini-3.5-flash-lite"
+    GEMINI_LIVE_MODEL: str = "gemini-3.8-live"
     ENABLE_AI_MOCK: bool = False
 
     # Valhalla Open-Source Routing Engine configuration

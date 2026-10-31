@@ -5,8 +5,16 @@
  * All AI and external requests must go through the backend server.
  */
 
-// Default to ADB reversed port / local host on port 8000 for physical phone access
-export const DEFAULT_BACKEND_URL = "http://127.0.0.1:8000";
+// Resolved default backend URL: prefers EXPO_PUBLIC_BACKEND_URL when defined (e.g. Render deployment),
+// falling back to local host on port 8000 for local development and ADB reverse.
+const rawEnvUrl = typeof process !== "undefined" && process.env ? process.env.EXPO_PUBLIC_BACKEND_URL : undefined;
+const resolvedEnvUrl = rawEnvUrl ? rawEnvUrl.trim().replace(/\/+$/, "") : "";
+
+export const DEFAULT_BACKEND_URL = resolvedEnvUrl.length > 0
+  ? (resolvedEnvUrl.startsWith("http://") || resolvedEnvUrl.startsWith("https://")
+      ? resolvedEnvUrl
+      : `http://${resolvedEnvUrl}`)
+  : "http://127.0.0.1:8000";
 
 let currentBackendUrl = DEFAULT_BACKEND_URL;
 

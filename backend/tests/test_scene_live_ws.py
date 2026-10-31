@@ -146,3 +146,20 @@ def test_ws_pause_and_resume(client, monkeypatch):
         resume_resp = json.loads(ws.receive_text())
         assert resume_resp["type"] == "session_state"
         assert resume_resp["status"] == "active"
+
+def test_ws_handshake_configured_gemini_live_model(client, monkeypatch):
+    """When GEMINI_API_KEY is configured, WebSocket handshake reports GEMINI_LIVE_MODEL without error."""
+    monkeypatch.setenv("GEMINI_API_KEY", "fake-live-api-key")
+    monkeypatch.setenv("ENABLE_AI_MOCK", "True")
+    get_settings.cache_clear()
+
+    with client.websocket_connect("/api/v1/ai/scene-live-ws") as ws:
+        raw = ws.receive_text()
+        handshake = json.loads(raw)
+        assert handshake["type"] == "session_state"
+        assert handshake["status"] == "connected"
+        assert handshake["model"] == "gemini-3.8-live"
+        ws.send_text(json.dumps({"type": "stop"}))
+        term_raw = ws.receive_text()
+        term = json.loads(term_raw)
+        assert term["type"] == "session_terminated"

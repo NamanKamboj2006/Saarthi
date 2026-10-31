@@ -32,3 +32,12 @@ def create_application() -> FastAPI:
 
 
 app = create_application()
+
+
+if __name__ == "__main__":
+    import os
+    import uvicorn
+
+    settings = get_settings()
+    port = int(os.environ.get("PORT", settings.PORT))
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port)
