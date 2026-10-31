@@ -1,0 +1,28 @@
+/**
+ * Backend API configuration.
+ *
+ * NOTE: Never store Gemini or cloud API keys in the mobile application.
+ * All AI and external requests must go through the backend server.
+ */
+
+// Default to ADB reversed port / local host on port 8000 for physical phone access
+export const DEFAULT_BACKEND_URL = "http://127.0.0.1:8000";
+
+let currentBackendUrl = DEFAULT_BACKEND_URL;
+
+export function getBackendBaseUrl(): string {
+  return currentBackendUrl;
+}
+
+export function setBackendBaseUrl(newUrl: string): string {
+  let cleaned = newUrl.trim();
+  // Strip trailing slashes
+  cleaned = cleaned.replace(/\/+$/, "");
+  if (cleaned.length > 0) {
+    if (!cleaned.startsWith("http://") && !cleaned.startsWith("https://")) {
+      cleaned = `http://${cleaned}`;
+    }
+    currentBackendUrl = cleaned;
+  }
+  return currentBackendUrl;
+}
